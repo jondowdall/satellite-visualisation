@@ -1,0 +1,275 @@
+body { margin: 0; }
+canvas { width: 100%; height: 100% }
+
+div.title {
+    background: linear-gradient(white, #CCCCCC);
+    border-style: outset;
+    border-width: 0px;
+    border-color: #cccccc;
+}
+
+h1 {
+    margin: 0;
+}
+
+h2 {
+    margin: 0;
+}
+
+div#body {
+    padding: 0.5em;    
+}
+
+div#form{
+    float: left;
+    width: 60%;
+}
+
+div#info{
+    float: left;
+    width: 40%;
+    background-color: #cccccc;
+    padding: 0.0em;
+}
+
+div#details{
+    float: left;
+    width: 40%;
+    background-color: #cccccc;
+    text-align: left;
+    padding: 0.0em;
+}
+
+@media screen and (max-width: 10cm) {
+    div#info {
+        float: none;
+        width: 100%;
+    }
+
+    div#form {
+        float: none;
+        width: 100%;
+    }
+
+    div#details {
+        float: none;
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    div#info {
+        float: none;
+        width: 100%;
+    }
+
+    div#form {
+        float: none;
+        width: 100%;
+    }
+
+    div#details {
+        float: none;
+        width: 100%;
+    }
+}
+
+
+table {
+    border-collapse: collapse;
+    border: 0px solid black;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+tr {
+    border: 0px solid white;
+}
+
+th, td {
+    border: 1px solid black;
+}
+
+th.date_DONT_USE {
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    transform: rotate(270deg);
+}
+
+/* Style settings for calendar elements. */
+
+th.calendar-month-name {
+    border: 0px solid white;
+    text-align: left;
+    font-weight: bold;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+th.calendar-day-name {
+    color: white;
+    background-color: black;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+th.month-select {
+    height: 100%;
+    border: 0px solid white;
+}
+
+td.calendar-day {
+    text-align: right;
+    vertical-align: top;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+td.cal-annual-leave {
+    background-color: lightblue;
+}
+
+td.cal-leave {
+    background-color: lightblue;
+}
+
+td.selected {
+    background-color: lightblue;
+}
+
+td.cal-today {
+    background-color: yellow;
+}
+
+td.cal-weekend {
+    background-color: lightgray;
+}
+
+td.cal-previous-month {
+    color: gray;
+}
+
+td.cal-next-month {
+    color: gray;
+}
+
+td.cal-public-holiday {
+    background-color: pink;
+}
+
+td.cal-selected {
+    color: white;
+    background-color: blue;
+}
+
+div.calendar-selection {
+    text-align: left;
+}
+
+button.month-select {
+    display: block;
+    height: 100%;
+}
+
+.borderless {
+    border: 0px solid white;
+}
+
+td.row-delete {
+    border: 0px solid white;
+}
+
+input.hours {
+    border: 0px solid white;    
+}
+
+#content, h2 {
+    text-align: center;
+}
+
+table.leave-table {
+    background: white;
+}
+
+tr.header {
+    color: white;
+    background: black;
+    font-weight: bold;
+}
+
+div.small {
+    font-size: 0.6em;
+}
+
+div.approved {
+    color: black;
+}
+
+div.partially-approved {
+    font-weight: bold;
+    color: orange;
+}
+
+div.unapproved {
+    font-weight: bold;
+    color: red;
+}
+
+ul {
+    margin: 0;
+    padding: 0;    
+}
+
+li.person-link {
+    list-style-type: none;
+    text-align: left;
+}
+
+button#save {
+    float: right;
+}
+
+span.date-entry {
+    background: white;
+    display: inline-block;
+    width: 100%;
+}
+
+div.popup {
+    background: #eeeeee;
+    position: fixed;
+    z-index: 1000;
+    border-style: outset;
+    border-width: 1px;
+    border-color: #ffffff;
+    border-radius: 0.2em;
+    padding: 0.2em;
+}
+
+.field-name {
+    text-align: right;
+    border: 0px solid white;
+}
+
+.field-entry {
+    text-align: left;
+    border: 0px solid white;
+}
+
+.missing {
+    box-shadow: 0px 0px 7px 3px #c40404;
+ }
