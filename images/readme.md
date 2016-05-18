@@ -1,3 +1,3 @@
-Planed textures from:
+Planet textures from:
 
 http://planetpixelemporium.com/planets.html
