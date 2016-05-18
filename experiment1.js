@@ -82,7 +82,7 @@ function animate() {
 }
 
 function go() {
-    new Loader('gshhg-bin-2/gshhs_c.b', process_map_data, 'arraybuffer');
+//    new Loader('gshhg-bin-2/gshhs_c.b', process_map_data, 'arraybuffer');
     new Loader('tle/visual.txt', prcoess_tle_response);
     init();
     animate();
