@@ -199,7 +199,7 @@ function update_positions(time) {
         var x = R2 * Math.cos(-position.long);
         var z = R2 * Math.sin(-position.long);
         if (satellites[i].name === 'ISS (ZARYA)') {
-            colour = Cesium.Color.White;
+            colour = Cesium.Color.WHITE;
             size = 8;
         } else {
             colour = other_colour;
@@ -210,6 +210,15 @@ function update_positions(time) {
             show : true,
             pixelSize : size,
             color : colour,
+            outlineColor : Cesium.Color.TRANSPARENT,
+            outlineWidth : 0.0,
+            id : undefined
+        });
+        points.add({
+            position : Cesium.Cartesian3.fromDegrees(position.longitude, position.latitude, 0),
+            show : true,
+            pixelSize : size,
+            color : Cesium.Color.DARKGRAY,
             outlineColor : Cesium.Color.TRANSPARENT,
             outlineWidth : 0.0,
             id : undefined
