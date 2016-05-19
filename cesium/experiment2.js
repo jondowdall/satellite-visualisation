@@ -217,7 +217,7 @@ function update_positions(time) {
         points.add({
             position : Cesium.Cartesian3.fromDegrees(position.longitude, position.latitude, 0),
             show : true,
-            pixelSize : size,
+            pixelSize : 3,
             color : Cesium.Color.DARKGRAY,
             outlineColor : Cesium.Color.TRANSPARENT,
             outlineWidth : 0.0,
