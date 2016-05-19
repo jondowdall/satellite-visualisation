@@ -1,64 +1,14 @@
+var viewer, points;
 var camera, scene, renderer;
 var geometry, material, mesh, group, points;
 var satellites;
 var positions, point_mat;
 
 function init() {
+    viewer = new Cesium.Viewer('cesiumContainer');
+    var scene = viewer.scene;
+    points = scene.primitives.add(new Cesium.PointPrimitiveCollection());
 
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
-    camera.position.z = 1000;
-
-    scene = new THREE.Scene();
-
-    geometry = new THREE.SphereGeometry(400, 32, 24);
-
-    material = new THREE.MeshPhongMaterial( );
-   // material.transparent = true;
-   // material.opacity = 0.9;
-   /*
-    var map_loader = new THREE.TextureLoader();
-    map_loader.load(
-       'images/earthmap1k.jpg',
-        function ( texture ) {
-            material.map = texture;
-            mesh.material = material;
-        },
-        function ( xhr ) {
-            console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
-        },
-        function ( xhr ) {
-            console.log( 'An error happened' );
-        }
-    );
-   */
-    material.map = THREE.ImageUtils.loadTexture('images/earthmap1k.jpg');
-
-    material.bumpMap = THREE.ImageUtils.loadTexture('images/earthbump1k.jpg');
-    material.bumpScale = 0.9;
-
-    material.specularMap = THREE.ImageUtils.loadTexture('images/earthspec1k.jpg');
-    material.specular = new THREE.Color('grey');
-
-
-    mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-
-    var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-    directionalLight.position.set( 0.5, 1, 1);
-    scene.add( directionalLight );
-
-    var light = new THREE.AmbientLight( 0x000000 ); // soft white light
-    scene.add( light );
-
-    renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-    document.body.appendChild(renderer.domElement);
-    group = new THREE.Object3D();
-    //scene.add(group);
-
-    positions = new THREE.Geometry();
-    point_mat = new THREE.PointsMaterial({color: 0xffff00, size: 1, sizeAttenuation: false});
 }
 
 function animate() {
@@ -68,22 +18,12 @@ function animate() {
     if (satellites) {
         update_positions();
         //points.rotation.x += 0.01;
-        points.rotation.y += 0.002;
     }
-
-    //mesh.rotation.x += 0.01;
-    mesh.rotation.y += 0.002;
-
-    //group.rotation.x += 0.01;
-    group.rotation.y += 0.002;
-
-    renderer.render(scene, camera);
-
 }
 
 function go() {
 //    new Loader('gshhg-bin-2/gshhs_c.b', process_map_data, 'arraybuffer');
-    new Loader('tle/visual.txt', prcoess_tle_response);
+    new Loader('../tle/visual.txt', prcoess_tle_response);
     init();
     animate();
 }
@@ -219,8 +159,6 @@ function prcoess_tle_response(request) {
                      satellites[i].nodeo);
     }
     update_positions();
-    points = new THREE.Points(positions, point_mat);
-    scene.add(points);
 }
 
 function update_positions(time) {
@@ -250,6 +188,8 @@ function update_positions(time) {
     }
 
 
+    points.removeAll();
+    var colour, other_colour = new Cesium.Color(1, 1, 0.5, 0.5), size;
     for (var i = 0, ilen = satellites.length; i < ilen; ++i) {
         sgp4('wgs84', satellites[i], (julian_day - satellites[i].jdsatepoch) * 24 * 60, r, v);
         var position = eci_to_lat_long(r, julian_day);
@@ -258,7 +198,22 @@ function update_positions(time) {
         var R2 = R * Math.cos(position.lat);
         var x = R2 * Math.cos(-position.long);
         var z = R2 * Math.sin(-position.long);
-        positions.vertices[i] = new THREE.Vector3( x, y, z);
+        if (satellites[i].name === 'ISS (ZARYA)') {
+            colour = Cesium.Color.White;
+            size = 8;
+        } else {
+            colour = other_colour;
+            size = 3;
+        }
+        points.add({
+            position : Cesium.Cartesian3.fromDegrees(position.longitude, position.latitude, 1000 * (position.altitude - 6378.137)),
+            show : true,
+            pixelSize : size,
+            color : colour,
+            outlineColor : Cesium.Color.TRANSPARENT,
+            outlineWidth : 0.0,
+            id : undefined
+        });
         /*
         node = document.createElement('span');
         node.appendChild(document.createTextNode(satellites[i].name));
@@ -279,7 +234,6 @@ function update_positions(time) {
         container.appendChild(document.createElement('br'));
         */
     }
-    positions.verticesNeedUpdate = true;
 }
 
 // Convert Earth Centred Inertial co-ordinates to latitude, longitude and distance from centre
