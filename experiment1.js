@@ -217,8 +217,8 @@ function prcoess_tle_response(request) {
         sgp4init(satellites[i], 'wgs84', 'i', satellites[i].satnum, satellites[i].jdsatepoch-2433281.5, satellites[i].bstar,
                      satellites[i].ecco, satellites[i].argpo, satellites[i].inclo, satellites[i].mo, satellites[i].no,
                      satellites[i].nodeo);
-     	satellites[i].sprite = makeTextSprite( satellites[i].name, 
-		    { fontsize: 24, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );
+     	//satellites[i].sprite = makeTextSprite( satellites[i].name, 
+	//	    { fontsize: 24, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );
 	//scene.add(satellites[i].sprite);
     }
     update_positions();
@@ -261,7 +261,7 @@ function update_positions(time) {
         var x = R2 * Math.cos(-position.long);
         var z = R2 * Math.sin(-position.long);
         positions.vertices[i] = new THREE.Vector3( x, y, z);
-        satellites[i].sprite.position.set(x, y, z);
+        //satellites[i].sprite.position.set(x, y, z);
         /*
         node = document.createElement('span');
         node.appendChild(document.createTextNode(satellites[i].name));
