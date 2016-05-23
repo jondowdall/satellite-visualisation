@@ -219,7 +219,7 @@ function prcoess_tle_response(request) {
                      satellites[i].nodeo);
      	satellites[i].sprite = makeTextSprite( satellites[i].name, 
 		    { fontsize: 24, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );
-	    scene.add( satellites[i].sprite );
+	//scene.add(satellites[i].sprite);
     }
     update_positions();
     points = new THREE.Points(positions, point_mat);
@@ -251,7 +251,6 @@ function update_positions(time) {
         container.zIndex = 100;
         //document.getElementsByTagName('body')[0].appendChild(container);
     }
-
 
     for (var i = 0, ilen = satellites.length; i < ilen; ++i) {
         sgp4('wgs84', satellites[i], (julian_day - satellites[i].jdsatepoch) * 24 * 60, r, v);
