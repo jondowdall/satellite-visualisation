@@ -68,7 +68,9 @@ function animate() {
     if (satellites) {
         update_positions();
         //points.rotation.x += 0.01;
-        points.rotation.y += 0.002;
+        if (points) {
+            points.rotation.y += 0.002;
+        }
     }
 
     //mesh.rotation.x += 0.01;
