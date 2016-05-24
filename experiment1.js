@@ -217,8 +217,8 @@ function prcoess_tle_response(request) {
         sgp4init(satellites[i], 'wgs84', 'i', satellites[i].satnum, satellites[i].jdsatepoch-2433281.5, satellites[i].bstar,
                      satellites[i].ecco, satellites[i].argpo, satellites[i].inclo, satellites[i].mo, satellites[i].no,
                      satellites[i].nodeo);
-     	//satellites[i].sprite = makeTextSprite( satellites[i].name, 
-	//	    { fontsize: 24, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );
+     	satellites[i].sprite = makeTextSprite( satellites[i].name, 
+		    { fontsize: 24, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );
 	//scene.add(satellites[i].sprite);
     }
     update_positions();
@@ -543,7 +543,7 @@ function makeTextSprite( message, parameters )
 	var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
 		parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
 
-	var spriteAlignment = THREE.SpriteAlignment.topLeft;
+	var spriteAlignment = THREE.SpriteAlignment.bottomLeft;
 		
 	var canvas = document.createElement('canvas');
 	var context = canvas.getContext('2d');
@@ -554,7 +554,7 @@ function makeTextSprite( message, parameters )
 	var textWidth = metrics.width;
 	
 	// background color
-	context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
+	context.fillStyle = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
 								  + backgroundColor.b + "," + backgroundColor.a + ")";
 	// border color
 	context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
@@ -576,7 +576,7 @@ function makeTextSprite( message, parameters )
 	var spriteMaterial = new THREE.SpriteMaterial( 
 		{ map: texture, useScreenCoordinates: false, alignment: spriteAlignment } );
 	var sprite = new THREE.Sprite( spriteMaterial );
-	sprite.scale.set(100,50,1.0);
+	sprite.scale.set(100, 50, 1.0);
 	return sprite;	
 }
 
