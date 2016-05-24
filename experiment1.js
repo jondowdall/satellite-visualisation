@@ -219,10 +219,13 @@ function prcoess_tle_response(request) {
         sgp4init(satellites[i], 'wgs84', 'i', satellites[i].satnum, satellites[i].jdsatepoch-2433281.5, satellites[i].bstar,
                      satellites[i].ecco, satellites[i].argpo, satellites[i].inclo, satellites[i].mo, satellites[i].no,
                      satellites[i].nodeo);
-     	satellites[i].sprite = makeTextSprite( satellites[i].name, 
-		    { fontsize: 24, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );
+//     	satellites[i].sprite = makeTextSprite( satellites[i].name, 
+//		    { fontsize: 24, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );
 	//scene.add(satellites[i].sprite);
     }
+    satellites[0].sprite = makeTextSprite( satellites[0].name, 
+		    { fontsize: 24, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );
+    scene.add(satellites[0].sprite);
     update_positions();
     points = new THREE.Points(positions, point_mat);
     scene.add(points);
