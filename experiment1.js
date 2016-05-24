@@ -548,7 +548,7 @@ function makeTextSprite( message, parameters )
 	var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
 		parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
 
-	var spriteAlignment = THREE.SpriteAlignment.bottomLeft;
+	//var spriteAlignment = THREE.SpriteAlignment.bottomLeft;
 		
 	var canvas = document.createElement('canvas');
 	var context = canvas.getContext('2d');
@@ -579,7 +579,7 @@ function makeTextSprite( message, parameters )
 	texture.needsUpdate = true;
 
 	var spriteMaterial = new THREE.SpriteMaterial( 
-		{ map: texture, useScreenCoordinates: false, alignment: spriteAlignment } );
+		{ map: texture } );
 	var sprite = new THREE.Sprite( spriteMaterial );
 	sprite.scale.set(100, 50, 1.0);
 	return sprite;	
