@@ -554,12 +554,15 @@ function makeTextSprite( message, parameters )
 	// get size data (height depends only on font size)
 	var metrics = context.measureText( message );
 	var textWidth = metrics.width;
+        var width = Math.ceil(textWidth + borderThickness);
+        var height = Math.ceil(fontsize * 1.4 + borderThickness);
 
-	canvas.width = textWidth + borderThickness;
-	canvas.height = fontsize * 1.4 + borderThickness;
-	canvas.style.width = (textWidth + borderThickness) + 'px';
-	canvas.style.height = (fontsize * 1.4 + borderThickness) + 'px';
-	context.clearRect(0, 0, textWidth + borderThickness, fontsize * 1.4 + borderThickness);
+
+	canvas.width = width;
+	canvas.height = height;
+	canvas.style.width = width + 'px';
+	canvas.style.height = height + 'px';
+	context.clearRect(0, 0, width, height);
 	// background color
 	context.fillStyle = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
 								  + backgroundColor.b + "," + backgroundColor.a + ")";
