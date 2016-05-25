@@ -555,12 +555,12 @@ function makeTextSprite( message, parameters )
 	var metrics = context.measureText( message );
 	var textWidth = metrics.width;
         var width = Math.ceil(textWidth + 2 * borderThickness);
-        var height = Math.ceil(fontsize * 1.4 + 2 * borderThickness);
+        var height = Math.ceil(metrics.actualBoundingBoxAscent + actualBoundingBoxDescent + 2 * borderThickness);
 
 	canvas.width = width;
 	canvas.height = height;
-//	canvas.style.width = width + 'px';
-//	canvas.style.height = height + 'px';
+	canvas.style.width = width + 'px';
+	canvas.style.height = height + 'px';
 	context.clearRect(0, 0, width, height);
 	// background color
 	context.fillStyle = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
@@ -585,7 +585,7 @@ function makeTextSprite( message, parameters )
 	var spriteMaterial = new THREE.SpriteMaterial( 
 		{ map: texture } );
 	var sprite = new THREE.Sprite( spriteMaterial );
-	sprite.scale.set(100, 50, 1.0);
+	sprite.scale.set(width, height, 1.0);
 	return sprite;	
 }
 
