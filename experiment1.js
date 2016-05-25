@@ -554,7 +554,12 @@ function makeTextSprite( message, parameters )
 	// get size data (height depends only on font size)
 	var metrics = context.measureText( message );
 	var textWidth = metrics.width;
-	
+
+	canvas.width = textWidth + borderThickness;
+	canvas.height = fontsize * 1.4 + borderThickness;
+	canvas.style.width = (textWidth + borderThickness) + 'px';
+	canvas.style.height = (fontsize * 1.4 + borderThickness) + 'px';
+	context.clearRect(0, 0, textWidth + borderThickness, fontsize * 1.4 + borderThickness);
 	// background color
 	context.fillStyle = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
 								  + backgroundColor.b + "," + backgroundColor.a + ")";
@@ -563,10 +568,6 @@ function makeTextSprite( message, parameters )
 								  + borderColor.b + "," + borderColor.a + ")";
 
 	context.lineWidth = borderThickness;
-	canvas.width = textWidth + borderThickness;
-	canvas.height = fontsize * 1.4 + borderThickness;
-	canvas.style.width = (textWidth + borderThickness) + 'px';
-	canvas.style.height = (fontsize * 1.4 + borderThickness) + 'px';
 	roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
 	// 1.4 is extra height factor for text below baseline: g,j,p,q.
 	
@@ -601,5 +602,5 @@ function roundRect(ctx, x, y, w, h, r)
     ctx.quadraticCurveTo(x, y, x+r, y);
     ctx.closePath();
     ctx.fill();
-	ctx.stroke();   
+    ctx.stroke();   
 }
