@@ -555,7 +555,7 @@ function makeTextSprite( message, parameters )
 	var metrics = context.measureText( message );
 	var textWidth = metrics.width;
         var width = Math.ceil(textWidth + 2 * borderThickness);
-        var height = Math.ceil(metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent + 2 * borderThickness);
+        var height = Math.ceil(fontsize * 1.4 + 2 * borderThickness);
 
 	canvas.width = width;
 	canvas.height = height;
