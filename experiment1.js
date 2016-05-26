@@ -2,6 +2,7 @@ var camera, scene, renderer;
 var geometry, material, mesh, group, points;
 var satellites;
 var positions, point_mat;
+var selection;
 
 function init() {
 
@@ -69,15 +70,15 @@ function animate() {
         update_positions();
         //points.rotation.x += 0.01;
         if (points) {
-            points.rotation.y += 0.002;
+            //points.rotation.y += 0.002;
         }
     }
 
     //mesh.rotation.x += 0.01;
-    mesh.rotation.y += 0.002;
+    //mesh.rotation.y += 0.002;
 
     //group.rotation.x += 0.01;
-    group.rotation.y += 0.002;
+    //group.rotation.y += 0.002;
 
     renderer.render(scene, camera);
 
@@ -214,28 +215,8 @@ function get_struct(definition, buffer, offset) {
 }
 
 function prcoess_tle_response(request) {
-    satellites = process_tle_file(request.responseText);
-    for (var i = 0, ilen = satellites.length; i < ilen; ++i) {
-        sgp4init(satellites[i], 'wgs84', 'i', satellites[i].satnum, satellites[i].jdsatepoch-2433281.5, satellites[i].bstar,
-                     satellites[i].ecco, satellites[i].argpo, satellites[i].inclo, satellites[i].mo, satellites[i].no,
-                     satellites[i].nodeo);
-     	satellites[i].sprite = makeTextSprite( satellites[i].name, 
-		    { fontsize: 24, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );
-	group.add(satellites[i].sprite);
-    }
-    update_positions();
-    points = new THREE.Points(positions, point_mat);
-    scene.add(points);
-}
-
-function update_positions(time) {
     var container = document.getElementById('details');
     var node;
-
-    var r = [], v = [];
-
-    time = time || new Date();
-    var julian_day = time.getTime()/86400000 + 2440587.5;
 
     if (container) {
         while (container.firstChild) {
@@ -247,29 +228,78 @@ function update_positions(time) {
         container.style.position = 'fixed';
         container.style.top = 0;
         container.style.left = 0;
-        container.style.width = '10em';
+        container.style.width = '16em';
         container.style.height = '100%';
         container.style.overflow = 'auto';
+        container.style.backgroundColor = '#000000';
         container.zIndex = 100;
-        //document.getElementsByTagName('body')[0].appendChild(container);
+        document.getElementsByTagName('body')[0].appendChild(container);
     }
+
+    satellites = process_tle_file(request.responseText);
+    for (var i = 0, ilen = satellites.length; i < ilen; ++i) {
+        sgp4init(satellites[i], 'wgs84', 'i', satellites[i].satnum, satellites[i].jdsatepoch-2433281.5, satellites[i].bstar,
+                     satellites[i].ecco, satellites[i].argpo, satellites[i].inclo, satellites[i].mo, satellites[i].no,
+                     satellites[i].nodeo);
+     	satellites[i].sprite = makeTextSprite( satellites[i].name,
+		    { fontsize: 24, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );
+        group.add(satellites[i].sprite);
+        node = document.createElement('span');
+        node.id = 'satellite-' + i;
+        node.appendChild(document.createTextNode(satellites[i].name));
+        node.onclick = (function(satellite) {
+            return function() {
+                if (selection === satellite) {
+                    selection = undefined;
+                } else {
+                    selection = satellite;
+                }
+            };
+        }) (satellites[i]);
+        container.appendChild(node);
+        container.appendChild(document.createElement('br'));
+    }
+    update_positions();
+    points = new THREE.Points(positions, point_mat);
+    scene.add(points);
+}
+
+function update_positions(time) {
+    var r = [], v = [];
+    var node;
+
+    time = time || new Date();
+    var julian_day = time.getTime()/86400000 + 2440587.5;
 
     for (var i = 0, ilen = satellites.length; i < ilen; ++i) {
         sgp4('wgs84', satellites[i], (julian_day - satellites[i].jdsatepoch) * 24 * 60, r, v);
-        var position = eci_to_lat_long(r, julian_day);
-        var R = 400 * position.altitude / 6378.137;
-        var y = R * Math.sin(position.lat);
-        var R2 = R * Math.cos(position.lat);
-        var x = R2 * Math.cos(-position.long);
-        var z = R2 * Math.sin(-position.long);
+        satellites[i].position = eci_to_lat_long(r, julian_day);
+        var R = 400 * satellites[i].position.altitude / 6378.137;
+        var y = R * Math.sin(satellites[i].position.lat);
+        var R2 = R * Math.cos(satellites[i].position.lat);
+        var x = R2 * Math.cos(-satellites[i].position.long);
+        var z = R2 * Math.sin(-satellites[i].position.long);
         positions.vertices[i] = new THREE.Vector3( x, y, z);
-        satellites[i].sprite.position.set(x, y, z);
+
+        node = document.getElementById('satellite-' + i);
+        if (satellites[i] === selection) {
+            satellites[i].sprite.position.set(x, y, z);
+            satellites[i].sprite.visible = true;
+            if (node) {
+                node.style.fontWeight = 'bold';
+                node.style.color = "#ffffff";
+                camera.position.set(x * 2, y * 2, z * 2);
+                camera.lookAt(new THREE.Vector3(0,0,0));
+            }
+        } else {
+            satellites[i].sprite.visible = false;
+            if (node) {
+                node.style.fontWeight = 'normal';
+                node.style.color = "#e0e0ff";
+            }
+        }
+
         /*
-        node = document.createElement('span');
-        node.appendChild(document.createTextNode(satellites[i].name));
-        container.appendChild(node);
-        container.appendChild(document.createElement('br'));
-        
         node = document.createElement('span');
         node.appendChild(document.createTextNode(position.latitude));
         container.appendChild(node);
@@ -529,39 +559,42 @@ function parseYear(text) {
 function makeTextSprite( message, parameters )
 {
 	if ( parameters === undefined ) parameters = {};
-	
-	var fontface = parameters.hasOwnProperty("fontface") ? 
+
+	var fontface = parameters.hasOwnProperty("fontface") ?
 		parameters["fontface"] : "Arial";
-	
-	var fontsize = parameters.hasOwnProperty("fontsize") ? 
+
+	var fontsize = parameters.hasOwnProperty("fontsize") ?
 		parameters["fontsize"] : 18;
-	
-	var borderThickness = parameters.hasOwnProperty("borderThickness") ? 
+
+	var borderThickness = parameters.hasOwnProperty("borderThickness") ?
 		parameters["borderThickness"] : 4;
-	
+
 	var borderColor = parameters.hasOwnProperty("borderColor") ?
 		parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
-	
+
 	var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
 		parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
 
 	//var spriteAlignment = THREE.SpriteAlignment.bottomLeft;
-		
+
 	var canvas = document.createElement('canvas');
 	var context = canvas.getContext('2d');
 	context.font = "Bold " + fontsize + "px " + fontface;
-    
-	// get size data (height depends only on font size)
-	var metrics = context.measureText( message );
-	var textWidth = metrics.width;
-        var width = Math.ceil(textWidth + 2 * borderThickness);
-        var height = Math.ceil(fontsize * 1.4 + 2 * borderThickness);
 
-	canvas.width = width;
-	canvas.height = height;
-	canvas.style.width = width + 'px';
-	canvas.style.height = height + 'px';
-	context.clearRect(0, 0, width, height);
+	// get size data (height depends only on font size)
+	var metrics = context.measureText(message);
+	var textWidth = metrics.width;
+    var width = (textWidth + 2 * borderThickness);
+    var height = (fontsize * 1.4 + 2 * borderThickness);
+
+    var twidth = Math.pow(2, Math.ceil(Math.log(width) / Math.log(2)));
+    var theight = Math.pow(2, Math.ceil(Math.log(height) / Math.log(2)));
+
+	canvas.width = twidth;
+	canvas.height = theight;
+	canvas.style.width = twidth + 'px';
+	canvas.style.height = theight + 'px';
+	context.clearRect(0, 0, twidth, theight);
 	// background color
 	context.fillStyle = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
 								  + backgroundColor.b + "," + backgroundColor.a + ")";
@@ -572,25 +605,25 @@ function makeTextSprite( message, parameters )
 	context.lineWidth = borderThickness;
 	roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
 	// 1.4 is extra height factor for text below baseline: g,j,p,q.
-	
+
 	// text color
 	context.fillStyle = "rgba(0, 0, 0, 1.0)";
 
-	context.fillText( message, borderThickness, fontsize + borderThickness);
-	
+	context.fillText(message, borderThickness, fontsize + borderThickness);
+
 	// canvas contents will be used for a texture
-	var texture = new THREE.Texture(canvas) 
+	var texture = new THREE.Texture(canvas)
 	texture.needsUpdate = true;
 
-	var spriteMaterial = new THREE.SpriteMaterial( 
+	var spriteMaterial = new THREE.SpriteMaterial(
 		{ map: texture } );
 	var sprite = new THREE.Sprite( spriteMaterial );
 	sprite.scale.set(width, height, 1.0);
-	return sprite;	
+	return sprite;
 }
 
 // function for drawing rounded rectangles
-function roundRect(ctx, x, y, w, h, r) 
+function roundRect(ctx, x, y, w, h, r)
 {
     ctx.beginPath();
     ctx.moveTo(x+r, y);
@@ -604,5 +637,5 @@ function roundRect(ctx, x, y, w, h, r)
     ctx.quadraticCurveTo(x, y, x+r, y);
     ctx.closePath();
     ctx.fill();
-    ctx.stroke();   
+    ctx.stroke();
 }
