@@ -48,7 +48,7 @@ function init() {
     directionalLight.position.set( 0.5, 1, 1);
     scene.add( directionalLight );
 
-    var light = new THREE.AmbientLight( 0x000000 ); // soft white light
+    var light = new THREE.AmbientLight( 0x707070 ); // soft white light
     scene.add( light );
 
     renderer = new THREE.WebGLRenderer();
