@@ -3,6 +3,7 @@ var geometry, material, mesh, group, points;
 var satellites;
 var positions, point_mat;
 var selection;
+var y_pos;
 
 function init() {
 
@@ -558,6 +559,7 @@ function parseYear(text) {
 
 function makeTextSprite( message, parameters )
 {
+    message = message.trim();
 	if ( parameters === undefined ) parameters = {};
 
 	var fontface = parameters.hasOwnProperty("fontface") ?
@@ -590,10 +592,20 @@ function makeTextSprite( message, parameters )
     var twidth = Math.pow(2, Math.ceil(Math.log(width) / Math.log(2)));
     var theight = Math.pow(2, Math.ceil(Math.log(height) / Math.log(2)));
 
+    if (y_pos === undefined) {
+        y_pos = 0;
+    }
 	canvas.width = twidth;
 	canvas.height = theight;
 	canvas.style.width = twidth + 'px';
 	canvas.style.height = theight + 'px';
+    canvas.style.zIndex = 200;
+    //document.body.appendChild(canvas);
+    metrics = context.measureText(message);
+    textWidth = metrics.width;
+    height = (fontsize * 1.4 + 2 * borderThickness);
+
+
 	context.clearRect(0, 0, twidth, theight);
 	// background color
 	context.fillStyle = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
@@ -607,7 +619,7 @@ function makeTextSprite( message, parameters )
 	// 1.4 is extra height factor for text below baseline: g,j,p,q.
 
 	// text color
-	context.fillStyle = "rgba(0, 0, 0, 1.0)";
+	context.fillStyle = "rgba(255, 255, 255, 1.0)";
 
 	context.fillText(message, borderThickness, fontsize + borderThickness);
 
@@ -618,7 +630,7 @@ function makeTextSprite( message, parameters )
 	var spriteMaterial = new THREE.SpriteMaterial(
 		{ map: texture } );
 	var sprite = new THREE.Sprite( spriteMaterial );
-	sprite.scale.set(width, height, 1.0);
+	sprite.scale.set(twidth / 2, theight / 2, 1.0);
 	return sprite;
 }
 
