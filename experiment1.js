@@ -54,7 +54,7 @@ function init() {
 
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColorHex(0x000000, 1);
+    renderer.setClearColor(new THREE.Color(0x000000, 1));
 
     document.body.appendChild(renderer.domElement);
     group = new THREE.Object3D();
@@ -649,7 +649,7 @@ function makeTextSprite( message, parameters )
 	// text color
 	context.fillStyle = "rgba(255, 255, 255, 1.0)";
 
-	context.fillText(message, twidth - (textWidth + borderThickness), fontsize + borderThickness);
+	context.fillText(message, (twidth - (textWidth + borderThickness)) / 2, fontsize + borderThickness);
 
 	// canvas contents will be used for a texture
 	var texture = new THREE.Texture(canvas)
