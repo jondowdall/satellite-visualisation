@@ -215,8 +215,24 @@ function get_struct(definition, buffer, offset) {
     return offset;
 }
 
+function toggleDisplay(item, control) {
+    var display = item.style.display || 'block';
+    return function() {
+        if (item.style.display === 'none') {
+            item.style.display = display;
+            control.innerHTML = 'Hide';
+            item.parentElement.style.height = '100%';
+        } else {
+            item.style.display = 'none';
+            control.innerHTML = 'Show';
+            item.parentElement.style.height = 'auto';
+        }
+    }
+}
+
 function prcoess_tle_response(request) {
     var container = document.getElementById('details');
+    var expander = document.createElement('div');
     var node;
 
     if (container) {
@@ -235,6 +251,11 @@ function prcoess_tle_response(request) {
         container.style.backgroundColor = '#000000';
         container.zIndex = 100;
         document.getElementsByTagName('body')[0].appendChild(container);
+        node = document.createElement('button');
+        node.appendChild(document.createTextNode('Hide'));
+        node.onclick = toggleDisplay(expander, node);
+        container.appendChild(node);
+        container.appendChild(expander);
     }
 
     satellites = process_tle_file(request.responseText);
@@ -257,8 +278,8 @@ function prcoess_tle_response(request) {
                 }
             };
         }) (satellites[i]);
-        container.appendChild(node);
-        container.appendChild(document.createElement('br'));
+        expander.appendChild(node);
+        expander.appendChild(document.createElement('br'));
     }
     update_positions();
     points = new THREE.Points(positions, point_mat);
@@ -580,6 +601,8 @@ function makeTextSprite( message, parameters )
 	//var spriteAlignment = THREE.SpriteAlignment.bottomLeft;
 
 	var canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 64;
 	var context = canvas.getContext('2d');
 	context.font = "Bold " + fontsize + "px " + fontface;
 
@@ -595,12 +618,16 @@ function makeTextSprite( message, parameters )
     if (y_pos === undefined) {
         y_pos = 0;
     }
-	canvas.width = twidth;
-	canvas.height = theight;
-	canvas.style.width = twidth + 'px';
-	canvas.style.height = theight + 'px';
-    canvas.style.zIndex = 200;
-    //document.body.appendChild(canvas);
+    if (twidth > 256) {
+	   canvas.width = twidth;
+    } else {
+        twidth = 256;
+    }
+    if (theight > 64) {
+	    canvas.height = theight;
+    } else {
+        theight = 64;
+    }
     metrics = context.measureText(message);
     textWidth = metrics.width;
     height = (fontsize * 1.4 + 2 * borderThickness);
@@ -615,13 +642,13 @@ function makeTextSprite( message, parameters )
 								  + borderColor.b + "," + borderColor.a + ")";
 
 	context.lineWidth = borderThickness;
-	roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
+	//roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
 	// 1.4 is extra height factor for text below baseline: g,j,p,q.
 
 	// text color
 	context.fillStyle = "rgba(255, 255, 255, 1.0)";
 
-	context.fillText(message, borderThickness, fontsize + borderThickness);
+	context.fillText(message, twidth - (textWidth + borderThickness), fontsize + borderThickness);
 
 	// canvas contents will be used for a texture
 	var texture = new THREE.Texture(canvas)
