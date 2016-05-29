@@ -54,6 +54,7 @@ function init() {
 
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColorHex(0x000000, 1);
 
     document.body.appendChild(renderer.domElement);
     group = new THREE.Object3D();
