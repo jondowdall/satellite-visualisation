@@ -98,12 +98,13 @@ function go() {
     init();
     animate();
        // <script id="visual-tle" type="text/plain" src="https://www.celestrak.com/NORAD/elements/visual.txt"></script>
-
+/*
     var data = document.createElement('script');
     data.type = 'text/plain';
     data.id = 'visual.txt';
     data.url = "https://www.celestrak.com/NORAD/elements/visual.txt";
     document.getElementsByTagName('head')[0].appendChild(data);
+    */
 }
 
 function Loader(path, onload, type) {
