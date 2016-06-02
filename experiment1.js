@@ -4,11 +4,13 @@ var satellites;
 var positions, point_mat;
 var selection;
 var y_pos;
+var camera_pos;
 
 function init() {
 
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
     camera.position.z = 1000;
+    camera_pos = new Rotation(camera.position);
 
     scene = new THREE.Scene();
 
@@ -67,6 +69,10 @@ function init() {
 function animate() {
 
     requestAnimationFrame(animate);
+    var position = camera_pos.get_position();
+    camera.position.copy(position);
+    camera.lookAt(new THREE.Vector3(0,0,0));
+
 
     if (satellites) {
         update_positions();
@@ -91,6 +97,13 @@ function go() {
     new Loader('tle/visual.txt', prcoess_tle_response);
     init();
     animate();
+       // <script id="visual-tle" type="text/plain" src="https://www.celestrak.com/NORAD/elements/visual.txt"></script>
+
+    var data = document.createElement('script');
+    data.type = 'text/plain';
+    data.id = 'visual.txt';
+    data.url = "https://www.celestrak.com/NORAD/elements/visual.txt";
+    document.getElementsByTagName('head')[0].appendChild(data);
 }
 
 function Loader(path, onload, type) {
@@ -311,8 +324,7 @@ function update_positions(time) {
             if (node) {
                 node.style.fontWeight = 'bold';
                 node.style.color = "#ffffff";
-                camera.position.set(x * 2, y * 2, z * 2);
-                camera.lookAt(new THREE.Vector3(0,0,0));
+                camera_pos.moveTo(new THREE.Vector3(x * 2, y * 2, z * 2));
             }
         } else {
             satellites[i].sprite.visible = false;
@@ -602,8 +614,7 @@ function makeTextSprite( message, parameters )
 	//var spriteAlignment = THREE.SpriteAlignment.bottomLeft;
 
 	var canvas = document.createElement('canvas');
-    canvas.width = 256;
-    canvas.height = 64;
+    var canvas2 = document.createElement('canvas');
 	var context = canvas.getContext('2d');
 	context.font = "Bold " + fontsize + "px " + fontface;
 
@@ -615,6 +626,10 @@ function makeTextSprite( message, parameters )
 
     var twidth = Math.pow(2, Math.ceil(Math.log(width) / Math.log(2)));
     var theight = Math.pow(2, Math.ceil(Math.log(height) / Math.log(2)));
+    canvas2.width = twidth;
+    canvas2.height = theight;
+    var context = canvas2.getContext('2d');
+    context.font = "Bold " + fontsize + "px " + fontface;
 
     if (y_pos === undefined) {
         y_pos = 0;
@@ -652,7 +667,7 @@ function makeTextSprite( message, parameters )
 	context.fillText(message, (twidth - (textWidth + borderThickness)) / 2, fontsize + borderThickness);
 
 	// canvas contents will be used for a texture
-	var texture = new THREE.Texture(canvas)
+	var texture = new THREE.Texture(canvas2)
 	texture.needsUpdate = true;
 
 	var spriteMaterial = new THREE.SpriteMaterial(
