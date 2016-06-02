@@ -634,16 +634,7 @@ function makeTextSprite( message, parameters )
     if (y_pos === undefined) {
         y_pos = 0;
     }
-    if (twidth > 256) {
-	   canvas.width = twidth;
-    } else {
-        twidth = 256;
-    }
-    if (theight > 64) {
-	    canvas.height = theight;
-    } else {
-        theight = 64;
-    }
+
     metrics = context.measureText(message);
     textWidth = metrics.width;
     height = (fontsize * 1.4 + 2 * borderThickness);
